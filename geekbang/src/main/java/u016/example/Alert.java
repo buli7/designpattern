@@ -1,16 +1,24 @@
 package u016.example;
 
 
-public class Alert {
-    private AlertRule rule;
-    private Notification notification;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Alert(AlertRule rule, Notification notification) {
-        this.rule = rule;
-        this.notification = notification;
+public class Alert {
+    private List<AlertHandler> alertHandlerList = new ArrayList<>();
+
+
+    public void addAlertHandler(AlertHandler alertHandler) {
+        this.alertHandlerList.add(alertHandler);
     }
 
-    public void check(String api, long requestCount, long errorCount, long durationOfSeconds) {
+    public void check(ApiStatInfo apiStatInfo) {
+        for (AlertHandler handler : alertHandlerList) {
+            handler.check(apiStatInfo);
+        }
+    }
+
+    /*public void check(String api, long requestCount, long errorCount, long durationOfSeconds) {
         long tps = requestCount / durationOfSeconds;
         if (tps > rule.getMatchedRule(api).getMaxTps()) {
             notification.notify(NotificationEmergencyLevel.URGENCY, "...");
@@ -18,5 +26,5 @@ public class Alert {
         if (errorCount > rule.getMatchedRule(api).getMaxErrorCount()) {
             notification.notify(NotificationEmergencyLevel.SEVERE, "...");
         }
-    }
+    }*/
 }
